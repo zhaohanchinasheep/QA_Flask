@@ -1,67 +1,57 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+{% extends 'base.html' %}
+{# 导入宏 #}
+{% from "macro/form_errors.html" import form_field_errors %}
+{% block title %} {{ super() }} - 注册 {% endblock %}
+ {% block header %}
+     <link rel="stylesheet" href="./assets/style/login.css">
+     <link rel="stylesheet" href="//at.alicdn.com/t/font_1658093_nokjvsp8hws.css">
+ {% endblock %}
 
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-  <title>在线问答系统-注册</title>
 
-  <!-- Bootstrap -->
-  <link href="./assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+{% block layout %}
 
-  <!-- HTML5 shim 和 Respond.js 是为了让 IE8 支持 HTML5 元素和媒体查询（media queries）功能 -->
-  <!-- 警告：通过 file:// 协议（就是直接将 html 页面拖拽到浏览器中）访问页面时 Respond.js 不起作用 -->
-  <!--[if lt IE 9]>
-      <script src="./assets/plugins/html5shiv.min.js"></script>
-      <script src="./assets/plugins/respond.min.js"></script>
-    <![endif]-->
-
-  <link rel="stylesheet" href="./assets/style/common.css">
-  <link rel="stylesheet" href="./assets/style/login.css">
-  <link rel="stylesheet" href="//at.alicdn.com/t/font_1658093_nokjvsp8hws.css">
-</head>
-
-<body class="layout">
   <div class="container">
     <div class="row">
       <div class="col-md-6 col-md-offset-3">
         <!-- 消息通知区域 -->
-        <div class="alert alert-warning alert-dismissible fade in" role="alert">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-            aria-hidden="true">×</span></button>
-        <span>注册失败，请稍后重试</span>
-        </div>
+          {# 展示flash消息 #}
+        {% include 'components/flash_messages.html' %}
         <!-- // 消息通知区域 -->
         <div class="login-header">
           <h2 class="title text-center">在线问答系统-注册</h2>
           <div class="slogan text-center">有问题 上问答</div>
         </div>
         <!-- 表单登录 -->
-        <form class="login-form box-wrap" method="GET" action="../../templates/index.html">
-          <div class="form-group">
+          {# 将表单登陆的method改为post #}
+        <form class="login-form box-wrap" method="POST" action="{{ url_for('accounts.register') }}">
+            {# 不要忘记加csrf #}
+            {{ form.csrf_token }}
+            <div class="form-group">
             <label for="id-user-name">用户名</label>
-            <input type="email" class="form-control input-lg" id="id-user-name" placeholder="用户名">
+              {{ form.username }}
           </div>
+            {{ form_field_errors(form.username.errors) }}
           <div class="form-group">
             <label for="id-nick-name">昵称</label>
-            <input type="text" class="form-control input-lg" id="id-nick-name" placeholder="昵称">
+              {{ form.nickname }}
           </div>
+            {{ form_field_errors(form.nickname.errors) }}
           <div class="form-group">
             <label for="id-password">密码</label>
-            <input type="password" class="form-control input-lg" id="id-password" placeholder="请输入密码">
+              {{ form.password }}
           </div>
+            {{ form_field_errors(form.password.errors) }}
           <div class="form-group">
             <label for="id-confirm-password">确认密码</label>
-            <input type="password" class="form-control input-lg" id="id-confirm-password" placeholder="请重复密码">
+              {{ form.confirm_password }}
           </div>
+            {{ form_field_errors(form.confirm_password.errors) }}
           <div class="form-group">
             <button type="submit" class="btn btn-info btn-block btn-lg">注册</button>
           </div>
           <p class="desc">未注册手机验证后自动登录<br />
             注册即代表同意《用户使用协议》《隐私保护指引》</p>
-          <p class="text-right">已有账号，<a href="login.html">点击登录</a></p>
+          <p class="text-right">已有账号，<a href="{{ url_for('accounts.login') }}">点击登录</a></p>
         </form>
         <!-- //表单登录 -->
         <!-- 社交账号登录 -->
@@ -86,11 +76,5 @@
       </div>
     </div>
   </div>
+{% endblock %}
 
-  <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
-  <script src="./assets/plugins/jquery-3.4.1.min.js"></script>
-  <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
-  <script src="./assets/plugins/bootstrap/js/bootstrap.min.js"></script>
-</body>
-
-</html>

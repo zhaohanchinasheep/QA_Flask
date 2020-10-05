@@ -26,6 +26,10 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
+    # 打印user的实例化对象时，返回此对象的返回值
+    def __str__(self):
+        return self.nickname
+
 
 class UserProfile(db.Model):
     """用户详细信息表"""
@@ -43,7 +47,7 @@ class UserProfile(db.Model):
     # 建立外键关联
     # 用户id，关联user表
     user_id = db.Column(db.Integer, db.ForeignKey('accounts_user.id'))
-    # 用户姓名，关联user表
+    # 用户姓名
     username = db.Column(db.String(64))
     # 建立反向引用
     user = db.relationship("User", backref=db.backref('profile',uselist = False))
@@ -114,7 +118,10 @@ class Question(db.Model):
     def follow_count(self):
         """关注的数量"""
         return self.question_follow_list.filter_by(is_valid = True).count()
-
+    @property
+    def answer_count(self):
+        """回答的数量"""
+        return self.answer_list.filter_by(is_valid = True).count()
 
 
 class Answer(db.Model):
@@ -131,11 +138,19 @@ class Answer(db.Model):
     # 反向引用
     user = db.relationship('User', backref=db.backref('answer_list',lazy='dynamic'))
     question = db.relationship('Question', backref=db.backref('answer_list', lazy='dynamic'))
+
     # 评论数量
     ### 在这个类中定义了的数据，不管有没有存入数据库，都可以在html中调用
     @property
     def comment_count(self):
+        """评论的数量"""
         return self.question_comment_list.filter_by(is_valid = True).count()
+
+    @property
+    def love_count(self):
+        """对此回答点赞的数量"""
+        return self.answer_love_list.count()
+
 
 class AnswerComment(db.Model):
     """评论"""

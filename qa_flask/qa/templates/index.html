@@ -12,12 +12,10 @@
             <div class="row">
                 <div class="col-md-9">
                     <!-- 消息通知区域 -->
-                    <div class="alert alert-warning alert-dismissible fade in" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
-                                aria-hidden="true">×</span></button>
-                        <strong>你好，张三!</strong> 欢迎登陆在线问答系统
-                    </div>
+                    {% include 'components/flash_messages.html' %}
                     <!-- // 消息通知区域 -->
+                    {# g对象是全局变量 #}
+                    <div>{{ g.current_user.nickname }}</div>
                     <!-- banner图 -->
                     <div id="id-index-banner" class="carousel slide" data-ride="carousel">
                         <!-- Wrapper for slides -->

@@ -24,8 +24,8 @@ def detail(q_id):
     if not question.is_valid:
        abort(404)
     # 2.展示第一条回答的信息
-
-    return render_template('detail.html',question = question)
+    answer = question.answer_list.filter_by(is_valid = True).first()
+    return render_template('detail.html',question = question,answer = answer)
 
 
 @qa.route('/follow')
