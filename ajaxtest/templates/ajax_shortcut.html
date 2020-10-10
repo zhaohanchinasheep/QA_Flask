@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src='/static/jquery-3.4.1.min.js'></script>
+
+</head>
+<body>
+<p>ajax快捷函数的使用</p>
+<a href = 'javascript:;'>点击提交</a>
+<script>
+    /** get/post的使用
+    $(function () {
+        $('a').click(function() {
+            $.post('http://127.0.0.1:5000/ajax/js',{
+                username:'lulu',
+                password:'123hhh'
+            },
+                function (res) {
+                console.log(res),
+                    alert('123')
+                })
+
+        })
+
+    }
+     **/
+    {# getJSON的使用 #}
+    $(function () {
+        {# ajax全局设置 #}
+        $.ajaxSetup({
+            {# 设置全局的请求头信息 #}
+            headers:{
+                'appfrom':'h5'
+            },
+            {# 全局设置请求拦截 #}
+            error:function(event) {
+                console.log('发生了错误');
+                if (event.status === 401) {
+                    alert('请登录')
+                } else {
+                    alert('错误')
+                }
+            }
+        });
+        $('a').click(function() {
+            $.getJSON('http://127.0.0.1:5000/ajax/js',{
+                username:'lulu',
+                password:'123hhh'
+            },
+                function (res) {
+                console.log(res)
+                })
+        })
+
+    })
+</script>
+
+</body>
+</html>

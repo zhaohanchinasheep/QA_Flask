@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src='/static/jquery-3.4.1.min.js'></script>
+</head>
+<p>jquery中使用ajax</p>
+<a href="javascript:;">点击提交</a>
+<script>
+    $(document).ready(function () {
+        $('a').click(function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/ajax/js',
+                method: 'GET',
+                data: {
+                    username: 'lulu',
+                    password: '123456'
+                },
+                success: function (res) {
+                    console.log(res)
+                },
+                /**
+                error: function () {
+                    alert('请求失败')
+                },
+                complete: function () {
+                    alert('请求完成')
+                }
+                 **/
+            })
+        })
+    })
+</script>
+<body>
+
+</body>
+</html>

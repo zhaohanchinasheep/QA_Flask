@@ -26,6 +26,27 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
+    @property
+    def is_authenticated(self):
+        """flask-login扩展：表示已登陆或未登陆的属性
+        用于：用户登陆成功后将用户信息带到下一个页面
+        所以：用户的登陆状态都是激活的，并且账户可用"""
+        return True
+
+    @property
+    def is_active(self):
+        """flask-login扩展：返回true时，表示用户账户可用"""
+        return self.status == constants.UserStatus.USER_ACTIVE.value
+
+    @property
+    def is_anonymous(self):
+        """flask-login扩展：是否为匿名用户"""
+        return False
+
+    def get_id(self):
+        """flask-login扩展：返回用户id，但用户id必须是字符串，是一个方法"""
+        return '{}'.format(self.id)
+
     # 打印user的实例化对象时，返回此对象的返回值
     def __str__(self):
         return self.nickname
@@ -118,10 +139,25 @@ class Question(db.Model):
     def follow_count(self):
         """关注的数量"""
         return self.question_follow_list.filter_by(is_valid = True).count()
+
     @property
     def answer_count(self):
         """回答的数量"""
         return self.answer_list.filter_by(is_valid = True).count()
+
+    @property
+    def tags(self):
+        """文章标签"""
+        return self.tag_list.filter_by(is_valid = True) # 返回的是一组tag数据，每个tag中都有tag_name等元素
+
+    @property
+    def get_img_url(self):
+        """图片url"""
+        return 'medias/'+ self.img if self.img else ''
+
+    @property
+    def love_count(self):
+        return self.question_love_list.count()
 
 
 class Answer(db.Model):
@@ -144,12 +180,17 @@ class Answer(db.Model):
     @property
     def comment_count(self):
         """评论的数量"""
-        return self.question_comment_list.filter_by(is_valid = True).count()
+        return self.answer_comment_list.filter_by(is_valid = True).count()
 
     @property
     def love_count(self):
         """对此回答点赞的数量"""
         return self.answer_love_list.count()
+
+    def comment_list(self,reply_id=None):
+        """有效的评论列表"""
+        # reply_id用于查找回复评论而不是回答的评论id
+        return self.answer_comment_list.filter_by(is_valid=True,reply_id=reply_id)
 
 
 class AnswerComment(db.Model):
@@ -158,7 +199,7 @@ class AnswerComment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('accounts_user.id'))
     # 关联评论
-    replay_id = db.Column(db.Integer, db.ForeignKey('qa_answer_comment.id'))
+    reply_id = db.Column(db.Integer, db.ForeignKey('qa_answer_comment.id'))
     # 关联问题
     q_id = db.Column(db.Integer, db.ForeignKey('qa_question.id'))
     # 关联回答

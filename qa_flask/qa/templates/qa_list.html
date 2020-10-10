@@ -1,0 +1,45 @@
+{% for question in page_data.items %}
+<div class="qa-item">
+    {# 用数据库内容替换标题内容 q_id是查看详细内容时需要的问题id#}
+    <a href="{{ url_for( 'qa.detail',q_id = question.id) }}" class="title">{{ question.title }}</a>
+    <div class="desc">
+        {# 判断问题是否带图片，如果有就显示 #}
+        {% if question.img %}
+            <div class="left">
+                {# 修改图片的保存地址，使得图片可以顺利展示 #}
+                <img src="{{ question.get_img_url }}" alt="" srcset="">
+            </div>
+        {% endif %}
+        <div class="right">
+            {# 当desc没有定义时，不用设定true,当desc定义了，且desc此时为None，要使变量值显示为默认值，就要加true #}
+            <p class="show-desc">{{ question.desc | d('暂无描述',True) }}
+                <span class="more">阅读原文<i class="glyphicon glyphicon-menu-down"></i></span>
+            </p>
+            <p class="show-all hidden">
+                {# 手动设置是否转义 #}
+                {% autoescape false %}
+                {{ question.content | safe }}
+                {% endautoescape %}
+                 <span class="more">收起<i class="glyphicon glyphicon-menu-up"></i></span>
+            </p>
+        </div>
+    </div>
+    <div class="qa-footer">
+        <div>
+            <button type="button" class="btn btn-info btn-sm">关 注</button>
+        </div>
+        {# 重要：设置评论数量 #}
+        <div class="txt-menu"><i class="glyphicon glyphicon-comment"></i> {{ question.comment_count | d('0',True) }}条评论
+        </div>
+        <div class="txt-menu"><i class="glyphicon glyphicon-send"></i>分享</div>
+        <div class="txt-menu"><i class="glyphicon glyphicon-flag"></i>举报</div>
+        <div class="txt-menu btn-group">
+            <i class="glyphicon glyphicon-option-horizontal dropdown-toggle" data-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false"></i>
+            <ul class="dropdown-menu">
+                <li><a href="#">不感兴趣</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endfor %}

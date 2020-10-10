@@ -32,10 +32,10 @@
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                 aria-expanded="false">个人中心 <span class="caret"></span></a>
               <ul class="dropdown-menu">
-                <li><a href="./mine.html">我的主页</a></li>
-                <li><a href="./mine.html">设置</a></li>
+                <li><a href="{{ url_for('accounts.mine') }}">我的主页</a></li>
+                <li><a href="{{ url_for('accounts.mine') }}">设置</a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="#">退出</a></li>
+                <li><a href="{{ url_for('accounts.logout') }}">退出</a></li>
               </ul>
             </li>
           </ul>

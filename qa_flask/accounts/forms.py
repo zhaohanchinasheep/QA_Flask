@@ -1,12 +1,14 @@
 import hashlib
 
+from flask import request
+from flask_login import login_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
 # 昵称长度验证用length,验证两次密码输入是否一致用EqualTo
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 
 import utils
-from models import User, db, UserProfile
+from models import User, db, UserProfile, LoginHistory
 from utils import constants
 from utils.validators import phone_required
 
@@ -83,5 +85,32 @@ class LoginForm(FlaskForm):
                 result = False
                 self.username.errors = ['该用户已被禁用']
         return result
+
+    def dologin(self):
+        """登陆后，将登陆信息保存在数据库"""
+        # 1.获取用户信息
+        username = self.username.data
+        password = self.password.data
+        try:
+            # 2.查找对应用户
+            # TODO:验证加密后的密码是否正确
+            # password = hashlib.sha256(password.encode()).hexdigest()
+            user = User.query.filter_by(username=username, password=password).first()
+            # 3.登陆用户，根据sessions，用户会话的基本原理
+            # 将user.id保存在session会话中，后面使用钩子函数在跳转每一个页面时，都带上此用户id（最好写在配置函数中）
+            # session['user_id'] = user.id
+            login_user(user)
+            # 4.记录日志
+            # 获取客户端ip
+            ip = request.remote_addr
+            # 获取客户端设备，在请求头中
+            ua = request.headers.get('user-agent', None)
+            obj = LoginHistory(username=username, ip=ip, ua=ua, user=user)
+            db.session.add(obj)
+            db.session.commit()
+            return user
+        except Exception as e:
+            print(e)
+            return None
 
 

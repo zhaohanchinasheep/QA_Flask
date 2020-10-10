@@ -1,5 +1,7 @@
 {% extends 'base_layout.html' %}
-{% block title %}{{ super() }} - 关注页面{% endblock %}
+{% from 'macro/answer_comment_item.html' import comment_item_show %}
+{% from "macro/form_errors.html" import form_field_errors %}
+{% block title %}{{ super() }} - 文章详情{% endblock %}
 {% block header %}
     <link rel="stylesheet" href="/assets/style/detail.css">
 {% endblock %}
@@ -11,13 +13,15 @@
     <div class="container">
         <div class="row">
             <div class="col-md-9">
+                {# 加入flash消息 #}
+                {% include 'components/flash_messages.html' %}
                 <!-- 问题标签 -->
                 <ul class="que-tag-ls">
-                    <li><a href="#">心理学</a></li>
-                    <li><a href="#">经济学</a></li>
-                    <li><a href="#">大数据</a></li>
-                    <li><a href="#">大数据分析</a></li>
-                    <li><a href="#">新型冠状病毒</a></li>
+                    {% if question.tags %}
+                        {% for tag in question.tags %}
+                            <li><a href="#">{{ tag.tag_name }}</a></li>
+                        {% endfor %}
+                    {% endif %}
                 </ul>
                 <!-- // 问题标签 -->
                 <h3>{{ question.title }}</h3>
@@ -139,161 +143,24 @@
                     <div class="comment-box box-wrap">
                         <!-- 统计和菜单 -->
                         <div class="comment-stats">
-                            <div class="title">8条评论</div>
+                            <div class="title">{{ answer.comment_count|d('0',True) }}条评论</div>
                             <div class="menu"><i class="glyphicon glyphicon-random"></i>切换为时间顺序</div>
                         </div>
                         <!-- // 统计和菜单 -->
                         <!-- 评论列表 -->
-                        <div class="comment-ls">
-                            <div class="comment-item">
-                                <div class="header">
-                                    <div class="user-info">
-                                        <img class="avater" src="/assets/home/qa/user_head.jpg" alt="">
-                                        <strong class="uname">用户昵称</strong>
-                                    </div>
-                                    <div class="time">2小时前</div>
-                                </div>
-                                <div class="body">
-                                    不能这么说，是他们的眼界让他们不能接受。现在中国做到的事是让他们世界观崩塌的事[飙泪笑][飙泪笑]
-                                </div>
-                                <div class="footer">
-                                    <div><i class="glyphicon glyphicon-thumbs-up"></i> 5</div>
-                                    <div><i class="glyphicon glyphicon-share-alt"></i> 回复</div>
-                                    <div><i class="glyphicon glyphicon-thumbs-down"></i> 踩</div>
-                                    <div><i class="glyphicon glyphicon-flag"></i> 举报</div>
-                                </div>
-                                <!-- 输入框 -->
-                                <form class="form-horizontal comment-publish">
-                                    <input type="text" class="form-control" placeholder="写下你的评论...">
-                                    <button type="button" class="btn btn-default btn-grey">发布</button>
-                                </form>
-                                <!-- // 输入框 -->
-                            </div>
-                            <div class="comment-item">
-                                <div class="header">
-                                    <div class="user-info">
-                                        <img class="avater" src="/assets/home/qa/user_head.jpg" alt="">
-                                        <strong class="uname">用户昵称</strong>
-                                    </div>
-                                    <div class="time">2小时前</div>
-                                </div>
-                                <div class="body">
-                                    不能这么说，是他们的眼界让他们不能接受。现在中国做到的事是让他们世界观崩塌的事[飙泪笑][飙泪笑]
-                                </div>
-                                <div class="footer">
-                                    <div><i class="glyphicon glyphicon-thumbs-up"></i> 5</div>
-                                    <div><i class="glyphicon glyphicon-share-alt"></i> 回复</div>
-                                    <div><i class="glyphicon glyphicon-thumbs-down"></i> 踩</div>
-                                    <div><i class="glyphicon glyphicon-flag"></i> 举报</div>
-                                </div>
-                                <!-- 输入框 -->
-                                <form class="form-horizontal comment-publish hidden">
-                                    <input type="text" class="form-control" placeholder="写下你的评论...">
-                                    <button type="button" class="btn btn-default btn-grey">发布</button>
-                                </form>
-                                <!-- // 输入框 -->
-                            </div>
-                            <div class="comment-item">
-                                <div class="header">
-                                    <div class="user-info">
-                                        <img class="avater" src="/assets/home/qa/user_head.jpg" alt="">
-                                        <strong class="uname">用户昵称</strong>
-                                    </div>
-                                    <div class="time">2小时前</div>
-                                </div>
-                                <div class="body">
-                                    不能这么说，是他们的眼界让他们不能接受。现在中国做到的事是让他们世界观崩塌的事[飙泪笑][飙泪笑]
-                                </div>
-                                <div class="footer">
-                                    <div><i class="glyphicon glyphicon-thumbs-up"></i> 5</div>
-                                    <div><i class="glyphicon glyphicon-share-alt"></i> 回复</div>
-                                    <div><i class="glyphicon glyphicon-thumbs-down"></i> 踩</div>
-                                    <div><i class="glyphicon glyphicon-flag"></i> 举报</div>
-                                </div>
-                                <!-- 输入框 -->
-                                <form class="form-horizontal comment-publish hidden">
-                                    <input type="text" class="form-control" placeholder="写下你的评论...">
-                                    <button type="button" class="btn btn-default btn-grey">发布</button>
-                                </form>
-                                <!-- // 输入框 -->
-                            </div>
-                            <div class="comment-item reply">
-                                <div class="header">
-                                    <div class="user-info">
-                                        <img class="avater" src="/assets/home/qa/user_head.jpg" alt="">
-                                        <strong class="uname">用户昵称</strong>
-                                    </div>
-                                    <div class="time">2小时前</div>
-                                </div>
-                                <div class="body">
-                                    不能这么说，是他们的眼界让他们不能接受。现在中国做到的事是让他们世界观崩塌的事[飙泪笑][飙泪笑]
-                                </div>
-                                <div class="footer">
-                                    <div><i class="glyphicon glyphicon-thumbs-up"></i> 5</div>
-                                    <div><i class="glyphicon glyphicon-share-alt"></i> 回复</div>
-                                    <div><i class="glyphicon glyphicon-thumbs-down"></i> 踩</div>
-                                    <div><i class="glyphicon glyphicon-flag"></i> 举报</div>
-                                </div>
-                                <!-- 输入框 -->
-                                <form class="form-horizontal comment-publish hidden">
-                                    <input type="text" class="form-control" placeholder="写下你的评论...">
-                                    <button type="button" class="btn btn-default btn-grey">发布</button>
-                                </form>
-                                <!-- // 输入框 -->
-                            </div>
-                            <div class="comment-item">
-                                <div class="header">
-                                    <div class="user-info">
-                                        <img class="avater" src="/assets/home/qa/user_head.jpg" alt="">
-                                        <strong class="uname">用户昵称</strong>
-                                    </div>
-                                    <div class="time">2小时前</div>
-                                </div>
-                                <div class="body">
-                                    不能这么说，是他们的眼界让他们不能接受。现在中国做到的事是让他们世界观崩塌的事[飙泪笑][飙泪笑]
-                                </div>
-                                <div class="footer">
-                                    <div><i class="glyphicon glyphicon-thumbs-up"></i> 5</div>
-                                    <div><i class="glyphicon glyphicon-share-alt"></i> 回复</div>
-                                    <div><i class="glyphicon glyphicon-thumbs-down"></i> 踩</div>
-                                    <div><i class="glyphicon glyphicon-flag"></i> 举报</div>
-                                </div>
-                                <!-- 输入框 -->
-                                <form class="form-horizontal comment-publish hidden">
-                                    <input type="text" class="form-control" placeholder="写下你的评论...">
-                                    <button type="button" class="btn btn-default btn-grey">发布</button>
-                                </form>
-                                <!-- // 输入框 -->
-                            </div>
-                            <div class="comment-item">
-                                <div class="header">
-                                    <div class="user-info">
-                                        <img class="avater" src="/assets/home/qa/user_head.jpg" alt="">
-                                        <strong class="uname">用户昵称</strong>
-                                    </div>
-                                    <div class="time">2小时前</div>
-                                </div>
-                                <div class="body">
-                                    不能这么说，是他们的眼界让他们不能接受。现在中国做到的事是让他们世界观崩塌的事[飙泪笑][飙泪笑]
-                                </div>
-                                <div class="footer">
-                                    <div><i class="glyphicon glyphicon-thumbs-up"></i> 5</div>
-                                    <div><i class="glyphicon glyphicon-share-alt"></i> 回复</div>
-                                    <div><i class="glyphicon glyphicon-thumbs-down"></i> 踩</div>
-                                    <div><i class="glyphicon glyphicon-flag"></i> 举报</div>
-                                </div>
-                                <!-- 输入框 -->
-                                <form class="form-horizontal comment-publish hidden">
-                                    <input type="text" class="form-control" placeholder="写下你的评论...">
-                                    <button type="button" class="btn btn-default btn-grey">发布</button>
-                                </form>
-                                <!-- // 输入框 -->
-                            </div>
+                        <div class="comment-ls" id='id-comment-ls'>
+                        <p>内容正在加载中...</p>
                         </div>
                         <!-- // 评论列表 -->
+                        <nav aria-label="...">
+                            <ul class="pager">
+                                <li class="previous"><a href="javascript:;"><span aria-hidden="true">&larr;</span> 上一页</a></li>
+                                <li class="next"><a href="javascript:;">下一页 <span aria-hidden="true">&rarr;</span></a></li>
+                            </ul>
+                        </nav>
                         <!-- 发表评论 -->
                         <form class="form-horizontal comment-publish">
-                            <input type="text" class="form-control" placeholder="写下你的评论...">
+                            <input type="text" name='content' class="form-control" placeholder="写下你的评论...">
                             <button type="button" class="btn btn-default btn-grey">发布</button>
                         </form>
                         <!-- // 发表评论 -->
@@ -396,7 +263,9 @@
 </div>
 <!-- 写回答，对话框 -->
 <div class="modal fade" id="addComment" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <form class="form-horizontal modal-dialog" role="document" method="post" action="../../templates">
+    <form class="form-horizontal modal-dialog" role="document" method="post"
+          action="{{ url_for('qa.detail',q_id=question.id) }}">
+        {{ form.csrf_token }}
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
@@ -405,8 +274,11 @@
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <textarea class="form-control" rows="10" placeholder="请输入正文"></textarea>
+                    {{ form.content }}
+                    {{ ckeditor.load() }}
+                    {{ ckeditor.config(name='content') }}
                 </div>
+                {{ form_field_errors(form.content.errors) }}
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -428,3 +300,141 @@
     $('.show-all').removeClass('hidden');
     })
 {% endblock %}
+
+{% block js_extra %}
+    {# 异步请求网页中的数据
+用post请求，在点击btn后，才对数据进行处理，并将视图函数的处理结果返回给前端 #}
+    <script>
+        $(function () {
+            console.log('comment',{{ answer.comment_count }})
+            function bindCommentPublishEvent(html) {
+                var form = $('.comment-publish', html);
+                $('.btn', form).click(function () {
+                    {# 找到当前的form，即btn的parent #}
+                    var _form = $(this).parent();
+                    {# 找到当前输入的content值 #}
+                    var content = $('input[name = content]', _form);
+                    {# serialize()序列化表单值，在这里序列化来表单content的数据得到：content: 12334556 字典形式 #}
+                    var data = _form.serialize();
+                    $.ajax(
+                        {
+                            url: '{{ url_for("qa.comments",answer_id=answer.id)}}',
+                            method: 'post',
+                            data: data,
+                            complete: function (res) {
+                                console.log(res);
+                                if (res.status === 201) {
+                                    window.alert('评论成功');
+                                    {# 清空评论框 #}
+                                    content.val('')
+                                } else if (res.status === 400) {
+                                    window.alert(res.responseJSON.message)
+                                } else {
+                                    window.alert('请求失败，请稍后重试')
+                                }
+                            }
+                        }
+                    )
+                });
+            }
+
+            // 回复框的显示
+            function bindReplyEvent(html) {
+                $('.link-reply', html).click(function () {
+                    var _id = $(this).data('id');
+                    console.log(_id);
+                    var _form = $('#id-comment-' + _id);
+                    _form.removeClass('hidden')
+                });
+            }
+
+            // 绑定点赞事件
+            function bindCommentLoveEvent(html){
+                $('.link-love',html).click(function(){
+                    // 在事件中调用视图函数的接口
+                    var _this = $(this)
+                    var url = _this.data('url')
+
+                    $.ajax({
+                        url:url,
+                        method:'post',
+                        data:{},
+                        complete:function(res){
+                            if(res.status===201){
+                                window.alert('点赞成功');
+                                var count = $('span',_this).text();
+                                count = parseInt(count)+1;
+                                $('span',_this).text(count)
+                            }else if(res.status===401){
+                                window.alert('请先登陆')
+                            }else{
+                                window.alert('服务器正忙')
+                            }
+                        }
+                    })
+                })
+
+
+            }
+
+            // 评论列表的异步加载
+            var comment_ls = $('#id-comment-ls');
+            var page = 1;
+
+            function loadPageData(page) {
+                page = page || 1;
+                $.ajax({
+                    url: '{{ url_for("qa.comments",answer_id=answer.id)}}',
+                    method: 'get',
+                    data: {
+                        page:page
+                    },
+                    //异步以get的形式将页码传给网页，视图函数就可以拿到，从而传给模版进行指定页码的内容展示
+                    //整个的过程是：从视图函数的数据库拿到数据，渲染在模版中。用户点进页面，默认展示第一页的数据，
+                    //用户点击下一页或上一页，会将page的页码请求通过js以get形式传递到视图函数中（视图函数设置了request.args.get()）
+                    //接收到的页码为str格式，转换成int后，再传给模型，调用数据库的数据，从而渲染在模版中
+
+                    //因为将数据分页了，所以在页面上的回复和评论的js代码要在每个页面上生效，因此就要写在评论加载的代码中
+                    //注意函数的封装思想，一个功能封装成一个js函数，这里封装了三个，第一个是提交评论的功能，第二个是提交回复的功能，第三个是传递页码的功能
+
+                    complete: function (res) {
+                        if (res.status === 200) {
+                            var result = res.responseJSON;
+                            if (result.code === 0) {
+                                //html表示当前页的数据
+                                //在当前页绑定回复事件和评论事件
+                                var html = $(result.data);
+                                //绑定回复事件
+                                bindReplyEvent(html);
+                                //绑定评论事件
+                                bindCommentPublishEvent(html);
+                                bindCommentLoveEvent(html);
+                                //empty()表示移除被选元素的所有子节点和内容
+                                //移除后加入此内容
+                                comment_ls.empty().append(html)
+                            }else{
+                                window.alert('服务器正忙')
+                            }
+                        }
+                    }
+
+                })
+            }
+
+
+            $('.pager .previous').click(function () {
+                page = page - 1;
+                loadPageData(page)
+            });
+
+
+            $('.pager .next').click(function () {
+                page = page + 1;
+                loadPageData(page)
+            });
+            //默认加载第一页数据
+            loadPageData(page);
+        })
+    </script>
+{% endblock %}
+

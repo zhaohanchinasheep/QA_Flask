@@ -1,8 +1,10 @@
 import hashlib
 
 from flask import Blueprint, render_template, flash, redirect, url_for, session, request
+from flask_login import login_user, logout_user
 
 from accounts.forms import RegisterForm, LoginForm
+
 
 # step2 实例化蓝图对象
 from models import User, LoginHistory, db
@@ -15,31 +17,17 @@ accounts = Blueprint('accounts',__name__,template_folder = "templates",
 def login():
     """ 登陆页面 """
     form = LoginForm()
+    next_url = request.values.get('next', url_for('qa.index'))
     if form.validate_on_submit():
-        # 1.获取用户信息
-        username = form.username.data
-        password = form.password.data
-        # 2.查找对应用户
-        # TODO:验证加密后的密码是否正确
-        # password = hashlib.sha256(password.encode()).hexdigest()
-        user = User.query.filter_by(username=username, password=password).first()
-        # 3.登陆用户，根据sessions，用户会话的基本原理
-        # 将user.id保存在session会话中，后面使用钩子函数在跳转每一个页面时，都带上此用户id（最好写在配置函数中）
-        session['user_id'] = user.id
-        # 4.记录日志
-        # 获取客户端ip
-        ip = request.remote_addr
-        # 获取客户端设备，在请求头中
-        ua = request.headers.get('user-agent',None)
-        obj = LoginHistory(username = username,ip = ip ,ua = ua, user = user)
-        db.session.add(obj)
-        db.session.commit()
-        # 5.跳转到首页
-        flash('{}，欢迎回来'.format(user.nickname),'success')
-        return redirect(url_for('qa.index'))
-    else:
-        print(form.errors)
-    return render_template('login.html',form = form)
+        user = form.dologin()
+        if user:
+            # 5.跳转到首页
+            # 使用flask-login扩展 next 存储的是
+            flash('{}，欢迎回来'.format(user.nickname),'success')
+            return redirect(next_url)
+        else:
+            flash('登陆失败，请稍后重试','danger')
+    return render_template('login.html',next_url=next_url,form = form)
 
 
 @accounts.route('/register',methods = ['GET','POST'])
@@ -57,6 +45,12 @@ def register():
             # danger是bootstrap中的css
             flash('注册失败，请稍后再试','danger')
     return render_template('register.html',form = form)
+
+@accounts.route('/logout')
+def logout():
+    logout_user()
+    flash("欢迎下次再来",'success')
+    return redirect(url_for('accounts.login'))
 
 
 @accounts.route('/mine')

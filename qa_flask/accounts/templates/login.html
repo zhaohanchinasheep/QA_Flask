@@ -21,8 +21,11 @@
           <div class="slogan text-center">有问题 上问答</div>
         </div>
         <!-- 表单登录 -->
-        <form class="login-form box-wrap" method="POST" action="{{ url_for('accounts.login') }}">
-          {{ form.csrf_token }}
+        <form class="login-form box-wrap" method="POST"
+              action="{{ url_for('accounts.login') }}">
+          {# 加入一个隐藏的表单域，将next_url参数放入，这样post请求也可以拿到next_url了 #}
+            <input type = 'hidden' name = 'next' value = "{{ next_url|d('') }}">
+            {{ form.csrf_token }}
             <div class="form-group">
             <label for="id-user-name">用户名</label>
             {{ form.username }}
